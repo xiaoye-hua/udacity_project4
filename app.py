@@ -8,6 +8,8 @@ import pickle
 import json
 import os
 from diagnostics import model_predictions
+from scoring import score_model
+from diagnostics import dataframe_summary, execution_time, missing_data, outdated_packages_list
 
 
 
@@ -24,31 +26,50 @@ prediction_model = None
 
 
 #######################Prediction Endpoint
-@app.route("/prediction", methods=['POST','OPTIONS'])
+@app.route("/prediction", methods=['POST']
+           )
 def predict():        
     #call the prediction function you created in Step 3
-    path = os.path.join(dataset_csv_path, 'finaldata.csv')
+    path = request.args.get('path')
+    # print(path)
+    # path = os.path.join(dataset_csv_path, 'finaldata.csv')
     res = model_predictions(path)
-    return res
+    return str(res)
 
 # #######################Scoring Endpoint
-# @app.route("/scoring", methods=['GET','OPTIONS'])
-# def stats():
-#     #check the score of the deployed model
-#     return #add return value (a single F1 score number)
+@app.route("/scoring", methods=['GET','OPTIONS'])
+def scoring():
+    #check the score of the deployed model
+    score = score_model()
+    return str(score) #add return value (a single F1 score number)
 #
 # #######################Summary Statistics Endpoint
-# @app.route("/summarystats", methods=['GET','OPTIONS'])
-# def stats():
-#     #check means, medians, and modes for each column
-#     return #return a list of all calculated summary statistics
+@app.route("/summarystats", methods=['POST','OPTIONS'])
+def stats():
+    path = request.args.get('path')
+    df = pd.read_csv(path)
+    res = dataframe_summary(df=df)
+    #check means, medians, and modes for each column
+    return str(res) #return a list of all calculated summary statistics
 #
 # #######################Diagnostics Endpoint
-# @app.route("/diagnostics", methods=['GET','OPTIONS'])
-# def stats():
-#     #check timing and percent NA values
-#     return #add return value for all diagnostics
+@app.route("/diagnostics", methods=['POST','OPTIONS'])
+def diagnostics():
+    path = request.args.get('path')
+    df = pd.read_csv(path)
+    res1 = missing_data(df=df)
+    res2 = execution_time()
+    res3 = outdated_packages_list()
+
+    return {
+        'missing_data': res1,
+        'execution_time': res2,
+        # 'outdated_packages': res3
+
+    }#add return value for all diagnostics
 
 
 if __name__ == "__main__":    
-    app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
+    app.run(host='127.0.0.1', port=9000, debug=True
+            # , threaded=True
+            )

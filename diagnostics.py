@@ -94,8 +94,10 @@ def outdated_packages_list():
 if __name__ == '__main__':
     path = os.path.join(dataset_csv_path, 'finaldata.csv')
     df = pd.read_csv(path)
+
     model_predictions(path=path)
     dataframe_summary(df=df)
+
     missing_data(df=df)
     execution_time()
     outdated_packages_list()

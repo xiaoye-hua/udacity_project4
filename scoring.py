@@ -34,9 +34,10 @@ def score_model():
     y_pred = pipeline.predict(X)
     f1 = metrics.f1_score(y_true=y, y_pred=y_pred)
     file_path = os.path.join(model_path, 'latestscore.txt')
-    print(file_path)
+    # print(file_path)
     with open(file_path, 'w') as f:
         f.writelines(str(f1))
+    return f1
 
 
 if __name__ == "__main__":
