@@ -16,7 +16,7 @@ with open('config.json','r') as f:
     config = json.load(f) 
 
 dataset_csv_path = os.path.join(config['output_folder_path']) 
-test_data_path = os.path.join(config['test_data_path'])
+# test_data_path = os.path.join(config['test_data_path'])
 model_path = os.path.join(config['output_model_path'])
 
 
@@ -26,7 +26,7 @@ def score_model():
     #it should write the result to the latestscore.txt file
     pipeline = joblib.load(os.path.join(model_path, 'trainedmodel.pkl'))
 
-    file_list = [os.path.join(test_data_path, name) for name in os.listdir(test_data_path) if '.csv' in name]
+    file_list = [os.path.join(dataset_csv_path, name) for name in os.listdir(dataset_csv_path) if '.csv' in name]
     df_lst = [pd.read_csv(name) for name in file_list]
     df = pd.concat(df_lst)
     y = df['exited']

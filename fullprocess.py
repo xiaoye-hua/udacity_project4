@@ -64,7 +64,7 @@ logging.debug(f"original_f1: {original_f1}; new_f1: {new_f1}")
 
 ##################Deciding whether to proceed, part 2
 #if you found model drift, you should proceed. otherwise, do end the process here
-if new_f1 >= original_f1:
+if new_f1 <= original_f1:
     sys.exit("F1 doesn't decrease -> exit program")
 
 ####################  re-process data; re-run model training
